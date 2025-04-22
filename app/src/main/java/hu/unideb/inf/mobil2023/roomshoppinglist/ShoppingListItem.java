@@ -13,7 +13,7 @@ public class ShoppingListItem {
 
     @Override
     public String toString() {
-        return null;
+        return id + " - " + name;
     }
 
     public int getId() {

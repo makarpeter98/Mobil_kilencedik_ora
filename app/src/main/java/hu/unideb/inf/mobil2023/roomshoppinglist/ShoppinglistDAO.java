@@ -8,4 +8,9 @@ import java.util.List;
 
 @Dao
 public interface ShoppinglistDAO {
+    @Insert
+    void insertListItem(ShoppingListItem sli);
+
+    @Query("SELECT * FROM ShoppingList")
+    List<ShoppingListItem> getAllItems();
 }

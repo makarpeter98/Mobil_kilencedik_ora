@@ -12,23 +12,52 @@ import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
-    EditText newItemEditText;
-    TextView itemsListTextView;
     private ShoppingListDataBase shoppingListDataBase = null;
-
-    //Test commit
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        shoppingListDataBase = Room.databaseBuilder(this,
+                        ShoppingListDataBase.class,
+                        "shoppingList_db")
+                .fallbackToDestructiveMigration()
+                .build();
+
+        new Thread(
+                () -> Log.i("checkDb", shoppingListDataBase.shoppinglistDAO().getAllItems().toString())
+        ).start();
+        newItemEditText = findViewById(R.id.newItemEditText);
+        itemsListTextView = findViewById(R.id.itemsListTextView);
+
+        refreshUI();
     }
 
-    public void addNewItem(View view) {
+    EditText newItemEditText;
+    TextView itemsListTextView;
 
+    public void addNewItem(View view) {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                ShoppingListItem sli = new ShoppingListItem();
+                sli.setName(newItemEditText.getText().toString());
+                shoppingListDataBase.shoppinglistDAO().insertListItem(sli);
+                refreshUI();
+                return null;
+            }
+        }.execute();
     }
 
     private void refreshUI() {
-
+        new Thread(
+                () -> {
+                    String str = shoppingListDataBase.shoppinglistDAO().getAllItems().toString();
+                    runOnUiThread(
+                            () -> itemsListTextView.setText(str)
+                    );
+                }
+        ).start();
     }
 }
