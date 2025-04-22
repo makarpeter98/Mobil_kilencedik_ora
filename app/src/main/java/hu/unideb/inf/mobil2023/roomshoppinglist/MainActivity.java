@@ -16,6 +16,7 @@ public class MainActivity extends AppCompatActivity {
     TextView itemsListTextView;
     private ShoppingListDataBase shoppingListDataBase = null;
 
+    //Test commit
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
